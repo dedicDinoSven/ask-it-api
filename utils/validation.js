@@ -18,5 +18,18 @@ module.exports = {
             .bail()
             .custom((val, { req }) => val === req.body.password)
             .withMessage("Passwords do not match!")
-    ]
+    ],
+    loginValidator: [
+        check("email", "Email is required!")
+            .notEmpty()
+            .bail()
+            .isEmail()
+            .withMessage("Invalid email!")
+            .normalizeEmail(),
+        check("password", "Password is required!")
+            .notEmpty()
+            .bail()
+            .isLength({ min: 8 })
+            .withMessage("Password must be 6 to 100 characters long!")
+    ],
 };

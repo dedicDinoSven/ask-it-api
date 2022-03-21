@@ -36,7 +36,7 @@ const getUserById = async (req, res) => {
         const user = await UsersService.getUserById(req.params.id);
 
         if (!user)
-            return res.status(404).send({ message: "User not found" }).end();
+            return res.status(404).send({ message: "User not found!" }).end();
 
         res.status(200).send(user);
     } catch (err) {
@@ -90,6 +90,7 @@ const deleteUser = async (req, res) => {
         res.status(500).send({ message: err.message }).end();
     }
 };
+
 const UsersController = {
     createUser,
     getUsers,
@@ -97,4 +98,5 @@ const UsersController = {
     updateUser,
     deleteUser
 };
+
 module.exports = UsersController;

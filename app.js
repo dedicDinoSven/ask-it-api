@@ -12,9 +12,10 @@ app.use(cors());
 
 app.use("/api/users", require("./routes/users"));
 app.use("/api", require("./routes/auth"));
+app.use("/api/questions", require("./routes/questions"));
 
 const db = require("./database");
-db.sequelize.sync({ force: true })
+db.sequelize.sync()
     .then(() => console.log("Database sync"))
     .catch((err) => console.log(err));
 

@@ -40,7 +40,7 @@ const getAnswerById = async (req, res) => {
 
         res.status(200).send(answer);
     } catch (err) {
-
+        res.status(500).send({ message: err });
     }
 };
 

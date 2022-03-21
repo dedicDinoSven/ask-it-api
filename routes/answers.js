@@ -1,0 +1,12 @@
+const express = require("express");
+const router = express.Router();
+const auth = require("../middleware/auth");
+const answersController = require("../controllers/answersController");
+
+router.get("/", answersController.getAnswers);
+router.get("/:id", answersController.getAnswerById);
+router.post("/:id", auth, answersController.createAnswer);
+router.patch("/:id", auth, answersController.updateAnswer);
+router.delete("/:id", auth, answersController.deleteAnswer);
+
+module.exports = router;

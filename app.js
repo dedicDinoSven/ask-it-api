@@ -13,6 +13,7 @@ app.use(cors());
 app.use("/api/users", require("./routes/users"));
 app.use("/api", require("./routes/auth"));
 app.use("/api/questions", require("./routes/questions"));
+app.use("/api/answers", require("./routes/answers"));
 
 const db = require("./database");
 db.sequelize.sync()

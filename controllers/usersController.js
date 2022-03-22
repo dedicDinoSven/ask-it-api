@@ -1,23 +1,16 @@
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
-const { validationResult } = require("express-validator");
 const UsersService = require("../services/usersService");
 
 const createUser = async (req, res) => {
     const data = req.body;
 
-    const errors = validationResult(req);
+    try {
+        const user = await UsersService.createUser(data);
 
-    if (!errors.isEmpty())
-        return res.status(404).json({ errors: errors.array() }).end();
-    else {
-        try {
-            const user = await UsersService.createUser(data);
-
-            res.status(201).send(user);
-        } catch (err) {
-            res.status(500).send({ message: err.message }).end();
-        }
+        res.status(201).send(user);
+    } catch (err) {
+        res.status(500).send({ message: err.message }).end();
     }
 };
 
@@ -53,7 +46,8 @@ const updateUser = async (req, res) => {
     try {
         const user = await UsersService.getUserById(id);
         if (!user)
-            return res.status(404)
+            return res
+                .status(404)
                 .send({ message: "User does not exist!" })
                 .end();
         else {
@@ -65,7 +59,7 @@ const updateUser = async (req, res) => {
                 return res.status(200).send(updatedUser);
             } else
                 return res.status(403).send({
-                    message: "You are not authorized to update this user!"
+                    message: "You are not authorized to update this user!",
                 });
         }
     } catch (err) {
@@ -79,7 +73,8 @@ const deleteUser = async (req, res) => {
         const user = await UsersService.getUserById(id);
 
         if (!user)
-            return res.status(404)
+            return res
+                .status(404)
                 .send({ message: "User does not exist!" })
                 .end();
 
@@ -96,7 +91,7 @@ const UsersController = {
     getUsers,
     getUserById,
     updateUser,
-    deleteUser
+    deleteUser,
 };
 
 module.exports = UsersController;

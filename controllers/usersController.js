@@ -52,7 +52,7 @@ const updateUser = async (req, res) => {
             });
         }
     } catch (err) {
-        res.status(403).send({ message: err }).end();
+        res.status(403).send({ message: err.message }).end();
     }
 };
 
@@ -64,15 +64,15 @@ const updatePassword = async (req, res) => {
 
     try {
         if (id === decoded.id.toString()) {
-            const updatedUser = await UsersService.updatePassword(id, data);
-            return res.status(200).send(updatedUser);
+            await UsersService.updatePassword(id, data);
+            return res.status(200).send({ message: "Password changed!" });
         } else {
             return res.status(403).send({
                 message: "You are not allowed to update this user!",
             });
         }
     } catch (err) {
-        res.status(403).send({ message: err }).end();
+        res.status(403).send({ message: err.message }).end();
     }
 };
 

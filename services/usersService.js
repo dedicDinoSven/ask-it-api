@@ -79,16 +79,16 @@ const updateUser = async (id, data) => {
 
         if (!user) throw new Error("User does not exist!");
 
-        if (data.email) {
-            const existingUser = await User.findOne({
-                where: {
-                    email: data.email,
-                    id: { [Op.ne]: id },
-                },
-            });
+        if (!data.email) throw new Error("Email is required!");
 
-            if (existingUser) throw new Error("Email is used by someone else!");
-        }
+        const existingUser = await User.findOne({
+            where: {
+                email: data.email,
+                id: { [Op.ne]: id },
+            },
+        });
+
+        if (existingUser) throw new Error("Email is used by someone else!");
 
         user.set({
             firstName: data?.firstName,

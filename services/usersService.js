@@ -7,8 +7,6 @@ const jwt = require("jsonwebtoken");
 const createUser = async (data) => {
     if (!data.email) throw new Error("Email is required!");
     else if (!data.password) throw new Error("Password is required!");
-    else if (data.password.length < 5 || data.password.length > 100)
-        throw new Error("Password must be 5 to 100 characters long!");
     else if (!data.password2)
         throw new Error("Confirmed password is required!");
     else if (data.password !== data.password2)
@@ -64,18 +62,76 @@ const getUserById = async (id) => {
 };
 
 const updateUser = async (id, data) => {
+    const allowedUpdates = ["firstName", "lastName", "email"];
+    const fieldsForUpdate = Object.keys(data);
+
+    const isValid = fieldsForUpdate.every((field) =>
+        allowedUpdates.includes(field)
+    );
+
+    if (!isValid)
+        throw new Error(
+            "Invalid fields for update! Allowed updates are: first name, last name and email"
+        );
+
     try {
-        const existingUser = await User.findOne({
-            where: {
-                email: data.email,
-                id: { [Op.ne]: id },
-            },
+        const user = await User.findByPk(id);
+
+        if (!user) throw new Error("User does not exist!");
+
+        if (data.email) {
+            const existingUser = await User.findOne({
+                where: {
+                    email: data.email,
+                    id: { [Op.ne]: id },
+                },
+            });
+
+            if (existingUser) throw new Error("Email is used by someone else!");
+        }
+
+        user.set({
+            firstName: data?.firstName,
+            lastName: data?.lastName,
+            email: data?.email,
         });
+        await user.save();
 
-        if (existingUser && data.email)
-            return new Error("Email is used by someone else!");
+        return user;
+    } catch (err) {
+        throw err.message || "Error while trying to update user!";
+    }
+};
 
-        return await User.update({ ...data }, { where: { id: id } });
+const updatePassword = async (id, data) => {
+    const allowedUpdate = "password";
+    const fieldsForUpdate = Object.keys(data);
+
+    const isValid = fieldsForUpdate.some((field) => allowedUpdate === field);
+    if (!isValid) throw new Error("Invalid field for update!");
+
+    try {
+        const user = await User.findByPk(id);
+
+        if (!user) throw new Error("User does not exist!");
+
+        if (!data.password) throw new Error("Password is required!");
+        else if (!data.password2)
+            throw new Error("Confirmed password is required!");
+        else if (data.password !== data.password2)
+            throw new Error("Passwords do not match!");
+
+        const isOldPassword = await bcrypt.compare(data.password,
+            user.password);
+
+        if (isOldPassword)
+            throw new Error(
+                "You cannot use your current password as a new one!");
+
+        user.password = await bcrypt.hash(data.password, 10);
+        await user.save();
+
+        return user;
     } catch (err) {
         throw err.message || "Error while trying to update user!";
     }
@@ -94,6 +150,7 @@ const UsersService = {
     getUsers,
     getUserById,
     updateUser,
+    updatePassword,
     deleteUser,
 };
 

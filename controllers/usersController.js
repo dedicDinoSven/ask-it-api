@@ -1,4 +1,3 @@
-const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const UsersService = require("../services/usersService");
 
@@ -44,26 +43,36 @@ const updateUser = async (req, res) => {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
     try {
-        const user = await UsersService.getUserById(id);
-        if (!user)
-            return res
-                .status(404)
-                .send({ message: "User does not exist!" })
-                .end();
-        else {
-            if (data.password)
-                data.password = await bcrypt.hash(data.password, 10);
-
-            if (id.toString() === decoded.user.id.toString()) {
-                const updatedUser = await UsersService.updateUser(id, data);
-                return res.status(200).send(updatedUser);
-            } else
-                return res.status(403).send({
-                    message: "You are not authorized to update this user!",
-                });
+        if (id === decoded.id.toString()) {
+            const updatedUser = await UsersService.updateUser(id, data);
+            return res.status(200).send(updatedUser);
+        } else {
+            return res.status(403).send({
+                message: "You are not allowed to update this user!",
+            });
         }
     } catch (err) {
-        res.status(403).send({ message: err.message }).end();
+        res.status(403).send({ message: err }).end();
+    }
+};
+
+const updatePassword = async (req, res) => {
+    const { id } = req.params;
+    const data = req.body;
+    const token = req.header("x-auth-token");
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+
+    try {
+        if (id === decoded.id.toString()) {
+            const updatedUser = await UsersService.updatePassword(id, data);
+            return res.status(200).send(updatedUser);
+        } else {
+            return res.status(403).send({
+                message: "You are not allowed to update this user!",
+            });
+        }
+    } catch (err) {
+        res.status(403).send({ message: err }).end();
     }
 };
 
@@ -80,7 +89,7 @@ const deleteUser = async (req, res) => {
 
         await UsersService.deleteUser(id);
 
-        res.status(204).send({ message: "User deleted!" }).end();
+        res.status(200).send({ message: "User deleted!" }).end();
     } catch (err) {
         res.status(500).send({ message: err.message }).end();
     }
@@ -91,6 +100,7 @@ const UsersController = {
     getUsers,
     getUserById,
     updateUser,
+    updatePassword,
     deleteUser,
 };
 

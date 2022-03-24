@@ -1,5 +1,6 @@
 const AnswersService = require("../services/answersService");
 const jwt = require("jsonwebtoken");
+const RatingsService = require("../services/ratingsService");
 
 const createAnswer = async (req, res) => {
     const data = {
@@ -19,13 +20,18 @@ const createAnswer = async (req, res) => {
 
 const getAnswersByQuestionId = async (req, res) => {
     try {
-        const answers = await AnswersService.getAnswersByQuestionId(
+        let answers = await AnswersService.getAnswersByQuestionId(
             req.params.id
         );
-
+        for (let i = 0; i < answers.length; ++i) {
+            answers[i].ratings = await RatingsService.getAnswerRatings(
+                answers[i].id
+            );
+        }
+        console.log(answers);
         res.status(200).send(answers);
     } catch (err) {
-        res.status(500).send({ message: err.message }).end();
+        res.status(500).send({ message: err }).end();
     }
 };
 
@@ -36,8 +42,9 @@ const getAnswerById = async (req, res) => {
         if (!answer) {
             return res.status(404).send({ message: "Answer not found!" }).end();
         }
+        const ratings = await RatingsService.getAnswerRatings(req.params.id);
 
-        res.status(200).send(answer);
+        res.status(200).send({ answer, ratings });
     } catch (err) {
         res.status(500).send({ message: err });
     }

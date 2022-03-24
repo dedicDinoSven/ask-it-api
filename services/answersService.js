@@ -26,7 +26,7 @@ const createAnswer = async (data) => {
 
 const getAnswersByQuestionId = async (id) => {
     try {
-        return await Answer.findAll({
+        const answers = await Answer.findAll({
             where: { questionId: id },
             attributes: { exclude: "userId" },
             include: [
@@ -36,7 +36,10 @@ const getAnswersByQuestionId = async (id) => {
                     attributes: { exclude: "password" },
                 },
             ],
+            raw: true,
+            nest: true,
         });
+        return answers;
     } catch (err) {
         throw err.message || "Error while getting answers list!";
     }

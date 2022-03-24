@@ -1,5 +1,6 @@
 const QuestionsService = require("../services/questionsService");
 const jwt = require("jsonwebtoken");
+const RatingsService = require("../services/ratingsService");
 
 const createQuestion = async (req, res) => {
     const data = {
@@ -20,14 +21,18 @@ const createQuestion = async (req, res) => {
 const getQuestions = async (req, res) => {
     try {
         let filters = {};
-        if (req.query.filters)
-            filters = JSON.parse(req.query.filters);
+        if (req.query.filters) filters = JSON.parse(req.query.filters);
         const orderBy = req.query.orderBy;
         const sort = req.query.sort;
         const limit = parseInt(req.query.limit);
         const offset = req.query.offset;
         const questions = await QuestionsService.getQuestions(
-            filters, orderBy, sort, limit, offset);
+            filters,
+            orderBy,
+            sort,
+            limit,
+            offset
+        );
 
         res.status(200).send(questions);
     } catch (err) {
@@ -37,7 +42,7 @@ const getQuestions = async (req, res) => {
 
 const getQuestionById = async (req, res) => {
     try {
-        const question = await QuestionsService.getQuestionById(req.params.id);
+        let question = await QuestionsService.getQuestionById(req.params.id);
 
         if (!question) {
             return res
@@ -45,10 +50,11 @@ const getQuestionById = async (req, res) => {
                 .send({ message: "Question not found!" })
                 .end();
         }
+        const ratings = await RatingsService.getQuestionRatings(req.params.id);
 
-        res.status(200).send(question);
+        res.status(200).send({ question, ratings });
     } catch (err) {
-        res.status(500).send({ message: err.message }).end();
+        res.status(500).send({ message: err }).end();
     }
 };
 

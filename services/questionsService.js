@@ -34,7 +34,11 @@ const getQuestions = async (filters, orderBy, sort, limit, offset) => {
 
 const getQuestionById = async (id) => {
     try {
-        return await Question.findOne({ where: { id: id }, include: [User] });
+        return await Question.findOne({
+            attributes: { exclude: "userId" },
+            where: { id: id },
+            include: [User],
+        });
     } catch (err) {
         throw err.message || "Error while getting question with given ID";
     }

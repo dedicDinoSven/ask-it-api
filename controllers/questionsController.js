@@ -19,11 +19,13 @@ const createQuestion = async (req, res) => {
 
 const getQuestions = async (req, res) => {
     try {
+        const filters = JSON.parse(req.query.filters);
         const orderBy = req.query.orderBy;
         const sort = req.query.sort;
         const limit = parseInt(req.query.limit);
         const offset = req.query.offset;
         const questions = await QuestionsService.getQuestions(
+            filters,
             orderBy,
             sort,
             limit,

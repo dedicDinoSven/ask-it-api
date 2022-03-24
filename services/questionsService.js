@@ -9,12 +9,21 @@ const createQuestion = async (data) => {
     }
 };
 
-const getQuestions = async (orderBy, sort, limit, offset) => {
+const getQuestions = async (filters, orderBy, sort, limit, offset) => {
     try {
         return await Question.findAll({
+            where: filters,
+            attributes: { exclude: "userId" },
             order: [[orderBy, sort]],
             limit: limit,
             offset: offset,
+            include: [
+                {
+                    model: User,
+                    as: "user",
+                    attributes: { exclude: "password" },
+                },
+            ],
         });
     } catch (err) {
         throw err.message || "Error while getting questions list!";

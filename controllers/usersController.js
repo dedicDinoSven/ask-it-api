@@ -32,7 +32,7 @@ const getUserById = async (req, res) => {
 
         res.status(200).send(user);
     } catch (err) {
-        res.status(500).send({ message: err.message }).end();
+        res.status(500).send({ message: err }).end();
     }
 };
 

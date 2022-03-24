@@ -3,6 +3,7 @@ const db = require("../database");
 const User = db.User;
 const { Op } = require("sequelize");
 const jwt = require("jsonwebtoken");
+const Sequelize = require("sequelize");
 
 const createUser = async (data) => {
     if (!data.email) throw new Error("Email is required!");
@@ -56,7 +57,17 @@ const getUsers = async () => {
 const getUserById = async (id) => {
     try {
         return await User.findByPk(id, {
-            attributes: { exclude: ["password"] },
+            attributes: {
+                exclude: ["password"],
+                include: [
+                    [
+                        Sequelize.fn("COUNT", Sequelize.col("answers.id")),
+                        "answersCount",
+                    ],
+                ],
+            },
+            include: [{ model: db.Answer, as: "answers", attributes: [] }],
+            group: ["user.id"],
         });
     } catch (err) {
         throw err.message || "Error while getting user with given ID!";

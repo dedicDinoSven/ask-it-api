@@ -31,7 +31,7 @@ const getQuestions = async (req, res) => {
 
         res.status(200).send(questions);
     } catch (err) {
-        res.status(500).send({ message: err.message }).end();
+        res.status(500).send({ message: err }).end();
     }
 };
 

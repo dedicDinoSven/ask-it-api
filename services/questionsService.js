@@ -11,11 +11,13 @@ const createQuestion = async (data) => {
 
 const getQuestions = async (filters, orderBy, sort, limit, offset) => {
     try {
+        const numberOfQuestions = await Question.findAndCountAll();
+
         return await Question.findAll({
             where: filters,
             attributes: { exclude: "userId" },
             order: [[orderBy, sort]],
-            limit: limit,
+            limit: limit ? limit : numberOfQuestions.count,
             offset: offset,
             include: [
                 {

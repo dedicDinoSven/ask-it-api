@@ -1,6 +1,6 @@
 const db = require("../database");
 const Question = db.Question;
-
+const User = db.User;
 const createQuestion = async (data) => {
     try {
         return await Question.create(data);
@@ -19,7 +19,7 @@ const getQuestions = async () => {
 
 const getQuestionById = async (id) => {
     try {
-        return await Question.findByPk(id);
+        return await Question.findOne({ where: { id: id }, include: [User] });
     } catch (err) {
         throw err.message || "Error while getting question with given ID";
     }
@@ -46,7 +46,7 @@ const QuestionsService = {
     getQuestions,
     getQuestionById,
     updateQuestion,
-    deleteQuestion
+    deleteQuestion,
 };
 
 module.exports = QuestionsService;

@@ -3,10 +3,9 @@ const jwt = require("jsonwebtoken");
 
 const createAnswer = async (req, res) => {
     const data = {
-        title: req.body.title,
         text: req.body.text,
-        userId: req.user.id,
-        questionId: req.params.id
+        userId: req.user,
+        questionId: req.params.id,
     };
 
     try {
@@ -18,9 +17,11 @@ const createAnswer = async (req, res) => {
     }
 };
 
-const getAnswers = async (req, res) => {
+const getAnswersByQuestionId = async (req, res) => {
     try {
-        const answers = await AnswersService.getAnswers();
+        const answers = await AnswersService.getAnswersByQuestionId(
+            req.params.id
+        );
 
         res.status(200).send(answers);
     } catch (err) {
@@ -33,9 +34,7 @@ const getAnswerById = async (req, res) => {
         const answer = await AnswersService.getAnswerById(req.params.id);
 
         if (!answer) {
-            return res.status(404)
-                .send({ message: "Answer not found!" })
-                .end();
+            return res.status(404).send({ message: "Answer not found!" }).end();
         }
 
         res.status(200).send(answer);
@@ -54,7 +53,8 @@ const updateAnswer = async (req, res) => {
         const answer = await AnswersService.getAnswerById(id);
 
         if (!answer) {
-            return res.status(404)
+            return res
+                .status(404)
                 .send({ message: "Answer does not exist!" })
                 .end();
         }
@@ -65,9 +65,11 @@ const updateAnswer = async (req, res) => {
 
             return res.status(200).send(updatedAnswer);
         } else {
-            res.status(403).send({
-                message: "You are not authorized to update this answer!"
-            }).end();
+            res.status(403)
+                .send({
+                    message: "You are not authorized to update this answer!",
+                })
+                .end();
         }
     } catch (err) {
         res.status(403).send({ message: err.message }).end();
@@ -88,11 +90,15 @@ const deleteAnswer = async (req, res) => {
         if (answer?.userId.toString() === decoded.user.id.toString()) {
             await AnswersService.deleteAnswer(id);
 
-            return res.status(200).send({ message: "Answer deleted!" });
+            return res
+                .status(200)
+                .send({ message: "Answer deleted!", answer: answer });
         } else {
-            res.status(403).send({
-                message: "You are not authorized to delete this answer!"
-            }).end();
+            res.status(403)
+                .send({
+                    message: "You are not authorized to delete this answer!",
+                })
+                .end();
         }
     } catch (err) {
         res.status(500).send({ message: err.message }).end();
@@ -101,10 +107,10 @@ const deleteAnswer = async (req, res) => {
 
 const AnswersController = {
     createAnswer,
-    getAnswers,
+    getAnswersByQuestionId,
     getAnswerById,
     updateAnswer,
-    deleteAnswer
+    deleteAnswer,
 };
 
 module.exports = AnswersController;

@@ -5,7 +5,7 @@ const createQuestion = async (req, res) => {
     const data = {
         title: req.body.title,
         text: req.body.text,
-        userId: req.user.id
+        userId: req.user,
     };
 
     try {
@@ -32,15 +32,14 @@ const getQuestionById = async (req, res) => {
         const question = await QuestionsService.getQuestionById(req.params.id);
 
         if (!question) {
-            return res.status(404)
+            return res
+                .status(404)
                 .send({ message: "Question not found!" })
                 .end();
         }
 
         res.status(200).send(question);
-    } catch (err) {
-
-    }
+    } catch (err) {}
 };
 
 const updateQuestion = async (req, res) => {
@@ -53,7 +52,8 @@ const updateQuestion = async (req, res) => {
         const question = await QuestionsService.getQuestionById(id);
 
         if (!question) {
-            return res.status(404)
+            return res
+                .status(404)
                 .send({ message: "Question does not exist!" })
                 .end();
         }
@@ -64,9 +64,11 @@ const updateQuestion = async (req, res) => {
 
             return res.status(200).send(updatedQuestion);
         } else {
-            res.status(403).send({
-                message: "You are not authorized to update this question!"
-            }).end();
+            res.status(403)
+                .send({
+                    message: "You are not authorized to update this question!",
+                })
+                .end();
         }
     } catch (err) {
         res.status(403).send({ message: err.message }).end();
@@ -81,17 +83,23 @@ const deleteQuestion = async (req, res) => {
         const question = await QuestionsService.getQuestionById(id);
 
         if (!question) {
-            return res.status(404).send({ message: "Question does not exist!" })
+            return res
+                .status(404)
+                .send({ message: "Question does not exist!" });
         }
 
         if (question?.userId.toString() === decoded.user.id.toString()) {
             await QuestionsService.deleteQuestion(id);
 
-            return res.status(200).send({ message: "Question deleted!"});
+            return res
+                .status(200)
+                .send({ message: "Question deleted!", question: question });
         } else {
-            res.status(403).send({
-                message: "You are not authorized to delete this question!"
-            }).end();
+            res.status(403)
+                .send({
+                    message: "You are not authorized to delete this question!",
+                })
+                .end();
         }
     } catch (err) {
         res.status(500).send({ message: err.message }).end();
@@ -103,7 +111,7 @@ const QuestionController = {
     getQuestions,
     getQuestionById,
     updateQuestion,
-    deleteQuestion
+    deleteQuestion,
 };
 
 module.exports = QuestionController;

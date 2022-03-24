@@ -47,7 +47,7 @@ const createUser = async (data) => {
 
 const getUsers = async () => {
     try {
-        return await User.findAll();
+        return await User.findAll({ attributes: { exclude: ["password"] } });
     } catch (err) {
         throw err.message || "Error while getting users list!";
     }
@@ -55,7 +55,9 @@ const getUsers = async () => {
 
 const getUserById = async (id) => {
     try {
-        return await User.findByPk(id);
+        return await User.findByPk(id, {
+            attributes: { exclude: ["password"] },
+        });
     } catch (err) {
         throw err.message || "Error while getting user with given ID!";
     }
@@ -73,9 +75,10 @@ const updateUser = async (id, data) => {
         throw new Error(
             "Invalid fields for update! Allowed updates are: first name, last name and email"
         );
-
     try {
-        const user = await User.findByPk(id);
+        const user = await User.findByPk(id, {
+            attributes: { exclude: ["password"] },
+        });
 
         if (!user) throw new Error("User does not exist!");
 
@@ -121,17 +124,23 @@ const updatePassword = async (id, data) => {
         else if (data.password !== data.password2)
             throw new Error("Passwords do not match!");
 
-        const isOldPassword = await bcrypt.compare(data.password,
-            user.password);
+        const isOldPassword = await bcrypt.compare(
+            data.password,
+            user.password
+        );
 
         if (isOldPassword)
             throw new Error(
-                "You cannot use your current password as a new one!");
+                "You cannot use your current password as a new one!"
+            );
 
         user.password = await bcrypt.hash(data.password, 10);
         await user.save();
 
-        return user;
+        const updatedUser = await User.findByPk(id, {
+            attributes: { exclude: ["password"] },
+        });
+        return updatedUser;
     } catch (err) {
         throw err.message || "Error while trying to update user!";
     }

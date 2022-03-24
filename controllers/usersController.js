@@ -67,12 +67,12 @@ const updatePassword = async (req, res) => {
             await UsersService.updatePassword(id, data);
             return res.status(200).send({ message: "Password changed!" });
         } else {
-            return res.status(403).send({
+            res.status(403).send({
                 message: "You are not allowed to update this user!",
             });
         }
     } catch (err) {
-        res.status(403).send({ message: err.message }).end();
+        res.status(403).send({ message: err }).end();
     }
 };
 
@@ -89,7 +89,7 @@ const deleteUser = async (req, res) => {
 
         await UsersService.deleteUser(id);
 
-        res.status(200).send({ message: "User deleted!" }).end();
+        res.status(200).send({ message: "User deleted!", user: user }).end();
     } catch (err) {
         res.status(500).send({ message: err.message }).end();
     }

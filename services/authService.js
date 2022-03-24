@@ -4,7 +4,6 @@ const db = require("../database");
 const User = db.User;
 
 const login = async (email, password) => {
-    
     if (!email) throw new Error("Email is required!");
     else if (!password) throw new Error("Password is required!");
 

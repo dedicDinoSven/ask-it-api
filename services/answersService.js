@@ -1,17 +1,23 @@
 const db = require("../database");
 const Answer = db.Answer;
+const User = db.User;
 
 const createAnswer = async (data) => {
     try {
-        return await Answer.create(data);
+        return await Answer.create(data, {
+            include: [User],
+        });
     } catch (err) {
         throw err.message || "Error while creating new answer!";
     }
 };
 
-const getAnswers = async () => {
+const getAnswersByQuestionId = async (id) => {
     try {
-        return await Answer.findAll();
+        return await Answer.findAll({
+            where: { questionId: id },
+            include: [User],
+        });
     } catch (err) {
         throw err.message || "Error while getting answers list!";
     }
@@ -43,10 +49,10 @@ const deleteAnswer = async (id) => {
 
 const AnswerService = {
     createAnswer,
-    getAnswers,
+    getAnswersByQuestionId,
     getAnswerById,
     updateAnswer,
-    deleteAnswer
+    deleteAnswer,
 };
 
 module.exports = AnswerService;

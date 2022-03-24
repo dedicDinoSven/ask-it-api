@@ -48,7 +48,7 @@ const createUser = async (data) => {
 
 const getUsers = async () => {
     try {
-        const users = await User.findAll({
+        return await User.findAll({
             attributes: {
                 include: [
                     [
@@ -62,8 +62,6 @@ const getUsers = async () => {
             group: ["user.id"],
             order: [[Sequelize.col("answersCount"), "DESC"]],
         });
-
-        return users;
     } catch (err) {
         throw err.message || "Error while getting users list!";
     }

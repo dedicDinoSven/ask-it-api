@@ -14,6 +14,7 @@ app.use("/api/users", require("./routes/users"));
 app.use("/api", require("./routes/auth"));
 app.use("/api/questions", require("./routes/questions"));
 app.use("/api/answers", require("./routes/answers"));
+app.use("/api/ratings", require("./routes/ratings"));
 
 const db = require("./database");
 db.sequelize

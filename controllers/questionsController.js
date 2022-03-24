@@ -19,18 +19,15 @@ const createQuestion = async (req, res) => {
 
 const getQuestions = async (req, res) => {
     try {
-        const filters = JSON.parse(req.query.filters);
+        let filters = {};
+        if (req.query.filters)
+            filters = JSON.parse(req.query.filters);
         const orderBy = req.query.orderBy;
         const sort = req.query.sort;
         const limit = parseInt(req.query.limit);
         const offset = req.query.offset;
         const questions = await QuestionsService.getQuestions(
-            filters,
-            orderBy,
-            sort,
-            limit,
-            offset
-        );
+            filters, orderBy, sort, limit, offset);
 
         res.status(200).send(questions);
     } catch (err) {
@@ -50,7 +47,9 @@ const getQuestionById = async (req, res) => {
         }
 
         res.status(200).send(question);
-    } catch (err) {}
+    } catch (err) {
+        res.status(500).send({ message: err.message }).end();
+    }
 };
 
 const updateQuestion = async (req, res) => {

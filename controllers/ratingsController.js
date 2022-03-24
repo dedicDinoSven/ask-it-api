@@ -110,7 +110,7 @@ const updateAnswerRating = async (req, res) => {
             }).end();
         }
     } catch (err) {
-        res.status(403).send({ message: err.message }).end();
+        res.status(403).send({ message: err }).end();
     }
 };
 

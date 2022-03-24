@@ -19,7 +19,7 @@ const getUsers = async (req, res) => {
 
         res.status(200).send(users);
     } catch (err) {
-        res.status(500).send({ message: err.message }).end();
+        res.status(500).send({ message: err }).end();
     }
 };
 

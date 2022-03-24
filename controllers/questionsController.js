@@ -19,7 +19,16 @@ const createQuestion = async (req, res) => {
 
 const getQuestions = async (req, res) => {
     try {
-        const questions = await QuestionsService.getQuestions();
+        const orderBy = req.query.orderBy;
+        const sort = req.query.sort;
+        const limit = parseInt(req.query.limit);
+        const offset = req.query.offset;
+        const questions = await QuestionsService.getQuestions(
+            orderBy,
+            sort,
+            limit,
+            offset
+        );
 
         res.status(200).send(questions);
     } catch (err) {

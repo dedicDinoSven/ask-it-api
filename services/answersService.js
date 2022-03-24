@@ -4,9 +4,16 @@ const User = db.User;
 
 const createAnswer = async (data) => {
     try {
-        return await Answer.create(data, {
-            include: [User],
+        const answer = await Answer.create(data, {
+            include: {
+                model: db.User,
+                as: "user",
+                attributes: { exclude: "password" },
+            },
         });
+
+        console.log(answer);
+        return answer;
     } catch (err) {
         throw err.message || "Error while creating new answer!";
     }
@@ -16,7 +23,14 @@ const getAnswersByQuestionId = async (id) => {
     try {
         return await Answer.findAll({
             where: { questionId: id },
-            include: [User],
+            attributes: { exclude: "userId" },
+            include: [
+                {
+                    model: User,
+                    as: "user",
+                    attributes: { exclude: "password" },
+                },
+            ],
         });
     } catch (err) {
         throw err.message || "Error while getting answers list!";

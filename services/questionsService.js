@@ -9,9 +9,13 @@ const createQuestion = async (data) => {
     }
 };
 
-const getQuestions = async () => {
+const getQuestions = async (orderBy, sort, limit, offset) => {
     try {
-        return await Question.findAll();
+        return await Question.findAll({
+            order: [[orderBy, sort]],
+            limit: limit,
+            offset: offset,
+        });
     } catch (err) {
         throw err.message || "Error while getting questions list!";
     }

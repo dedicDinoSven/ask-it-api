@@ -56,7 +56,7 @@ const getUsers = async () => {
 const getUserById = async (id) => {
     try {
         return await User.findByPk(id, {
-            attributes: { exclude: ["password"] },
+            attributes: { exclude: ["password"]},
         });
     } catch (err) {
         throw err.message || "Error while getting user with given ID!";

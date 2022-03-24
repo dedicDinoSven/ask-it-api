@@ -59,7 +59,7 @@ const updateAnswer = async (req, res) => {
                 .end();
         }
 
-        if (answer?.userId.toString() === decoded.user.id.toString()) {
+        if (answer?.userId.toString() === decoded.id.toString()) {
             await AnswersService.updateAnswer(id, data);
             const updatedAnswer = await AnswersService.getAnswerById(id);
 
@@ -87,7 +87,7 @@ const deleteAnswer = async (req, res) => {
             return res.status(404).send({ message: "Answer does not exist!" });
         }
 
-        if (answer?.userId.toString() === decoded.user.id.toString()) {
+        if (answer?.userId.toString() === decoded.id.toString()) {
             await AnswersService.deleteAnswer(id);
 
             return res

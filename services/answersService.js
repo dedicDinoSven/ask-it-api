@@ -4,16 +4,21 @@ const User = db.User;
 
 const createAnswer = async (data) => {
     try {
-        const answer = await Answer.create(data, {
-            include: {
-                model: db.User,
-                as: "user",
-                attributes: { exclude: "password" },
-            },
+        const answer = await Answer.create(data);
+
+        const createdAnswer = await Answer.findByPk(answer.id, {
+            attributes: { exclude: "userId" },
+            include: [
+                {
+                    model: User,
+                    as: "user",
+                    attributes: { exclude: "password" },
+                },
+            ],
         });
 
         console.log(answer);
-        return answer;
+        return createdAnswer;
     } catch (err) {
         throw err.message || "Error while creating new answer!";
     }

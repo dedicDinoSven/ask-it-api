@@ -40,6 +40,16 @@ const getQuestions = async (req, res) => {
     }
 };
 
+const getMostLikedQuestions = async (req, res) => {
+    try {
+        const questions = await QuestionsService.getMostLikedQuestions();
+
+        res.status(200).send(questions);
+    } catch (err) {
+        res.status(500).send({ message: err }).end();
+    }
+};
+
 const getQuestionById = async (req, res) => {
     try {
         let question = await QuestionsService.getQuestionById(req.params.id);
@@ -125,6 +135,7 @@ const deleteQuestion = async (req, res) => {
 const QuestionController = {
     createQuestion,
     getQuestions,
+    getMostLikedQuestions,
     getQuestionById,
     updateQuestion,
     deleteQuestion,

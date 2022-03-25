@@ -1,6 +1,8 @@
 const db = require("../database");
 const Question = db.Question;
 const User = db.User;
+const Sequelize = require("sequelize");
+
 const createQuestion = async (data) => {
     try {
         return await Question.create(data);
@@ -27,6 +29,38 @@ const getQuestions = async (filters, orderBy, sort, limit, offset) => {
                 },
             ],
         });
+    } catch (err) {
+        throw err.message || "Error while getting questions list!";
+    }
+};
+
+const getMostLikedQuestions = async () => {
+    try {
+        const mostLiked = await Question.findAll({
+            attributes: {
+                include: [
+                    [
+                        Sequelize.fn("COUNT", Sequelize.col("ratings.id")),
+                        "likesCount",
+                    ],
+                ],
+            },
+            include: [
+                {
+                    model: db.Rating,
+                    as: "ratings",
+                    attributes: [],
+                    where: { value: 1 },
+                    required: true,
+                    duplicating: false,
+                },
+            ],
+            limit: 5,
+            group: ["question.id"],
+            order: [[Sequelize.col("likesCount"), "DESC"]],
+        });
+
+        return mostLiked;
     } catch (err) {
         throw err.message || "Error while getting questions list!";
     }
@@ -63,6 +97,7 @@ const deleteQuestion = async (id) => {
 const QuestionsService = {
     createQuestion,
     getQuestions,
+    getMostLikedQuestions,
     getQuestionById,
     updateQuestion,
     deleteQuestion,

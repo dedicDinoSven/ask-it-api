@@ -23,7 +23,6 @@ const CreateQuestion = () => {
             console.log(err);
         }
     };
-
     return (
         <div className="create-question-wrapper">
             <h1>Ask a Question</h1>

@@ -352,8 +352,9 @@
 .users-list-wrapper .users-list-row .users-list-row-left h1 {
   margin-left: 10px;
 }
-.users-list-wrapper .users-list-row .users-list-row-left h2 {
+.users-list-wrapper .users-list-row .users-list-row-left p {
   height: 100%;
+  font-size: 14px;
   color: #4693f3;
   margin-left: 20px;
 }

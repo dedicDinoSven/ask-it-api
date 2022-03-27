@@ -33,11 +33,24 @@ class RatingsApi {
         return Request.patch(`/ratings/answer/${answerId}/${id}`, data);
     }
 
-    static deleteQuestionRating(id, questionId) {
-        return Request.delete(`/ratings/question/${questionId}/${id}`)
+    static deleteQuestionLike(questionId) {
+        return Request.delete(`/ratings/question/${questionId}`,
+            { value: 1 });
     }
-    static deleteAnswerRating(id, answerId) {
-        return Request.delete(`/ratings/answer/${answerId}/${id}`)
+
+    static deleteQuestionDislike(questionId) {
+        return Request.delete(`/ratings/question/${questionId}`,
+            { value: 0 });
+    }
+
+    static deleteAnswerLike(answerId) {
+        return Request.delete(`/ratings/answer/${answerId}`,
+            { value: 1 });
+    }
+
+    static deleteAnswerDislike(answerId) {
+        return Request.delete(`/ratings/answer/${answerId}`,
+            { value: 0 });
     }
 }
 

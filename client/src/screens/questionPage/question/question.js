@@ -4,7 +4,8 @@ import DateUtils from "../../../utils/dateUtils";
 import { useNavigate } from "react-router";
 
 const Question = ({
-    question, handleQuestionRating, questionRating, userId
+    question, questionRating, userId, handleQuestionLike,
+    handleQuestionDislike
 }) => {
     const navigate = useNavigate();
 
@@ -37,17 +38,15 @@ const Question = ({
                     <button className="question-rating"
                             style={questionRating.liked
                                 ? { color: "#4693f3" } : { color: "#000" }}
-                            disabled={userId && userId === question?.user?.id}
-                            onClick={() => handleQuestionRating(question?.id,
-                                questionRating?.id, 1)}>
+                            disabled={!userId || userId === question?.user?.id}
+                            onClick={() => handleQuestionLike(question?.id)}>
                         <FaArrowAltCircleUp /> {question?.ratings?.likes.length}
                     </button>
                     <button className="question-rating"
                             style={questionRating.disliked
                                 ? { color: "#e7412c" } : { color: "#000" }}
-                            disabled={userId && userId === question?.user?.id}
-                            onClick={() => handleQuestionRating(question?.id,
-                                questionRating?.id, 0)}>
+                            disabled={!userId || userId === question?.user?.id}
+                            onClick={() => handleQuestionDislike(question?.id)}>
                         <FaArrowAltCircleDown /> {question?.ratings?.dislikes.length}
                     </button>
                 </div>

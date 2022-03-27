@@ -19,11 +19,11 @@ const UsersList = (props) => {
                          onClick={() => navigate(`/user/${item?.id}`)}>
                         <div className="users-list-row-left">
                             <h1>{`${index + 1}.`}</h1>
-                            <h2>{(item?.firstName.length > 0 ||
+                            <p>{(item?.firstName.length > 0 ||
                                 item?.lastName.length > 0) ?
                                 (item?.firstName + " " +
                                     item?.lastName) :
-                                item?.email}</h2>
+                                item?.email}</p>
                         </div>
                         <h3>{item?.answersCount}</h3>
                     </div>

@@ -4,11 +4,10 @@ class Request {
     static DefaultSettings = {
         Protocol: process.env.REACT_APP_PROTOCOL ?? "https",
         BaseUrl:
-            process.env.REACT_APP_BACKEND_URL ??
-            "ask-it-task-app.herokuapp.com/api",
+        process.env.REACT_APP_BACKEND_URL,
         Headers: {
             "Content-Type": "application/json",
-            "x-auth-token": JSON.parse(localStorage.getItem("user"))?.token,
+            "x-auth-token": JSON.parse(localStorage.getItem("user")),
         },
         queryParams: {},
     };
@@ -44,6 +43,7 @@ class Request {
             headers: {
                 ...this.DefaultSettings.Headers,
                 ...headers,
+                "x-auth-token": JSON.parse(localStorage.getItem("user"))?.token
             },
             withCredentials: true,
             xsrfCookieName: "csrftoken",
@@ -73,7 +73,7 @@ class Request {
         return this.basic("POST", url, headers, queryParams, data);
     }
 
-    static delete(url, queryParams = {}, headers = {}, data={}) {
+    static delete(url, queryParams = {}, headers = {}, data = {}) {
         return this.basic("DELETE", url, headers, queryParams, data);
     }
 

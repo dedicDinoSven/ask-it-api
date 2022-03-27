@@ -2,7 +2,8 @@ import Request from "./index";
 
 class QuestionsApi {
     static createQuestion(data) {
-        return Request.post("/questions", data);
+        return Request.post("/questions", data, {},
+            { "x-auth-token": JSON.parse(localStorage.getItem("user")) });
     }
 
     static getQuestions(orderBy = "id", sort = "ASC", limit = "", offset = 0,

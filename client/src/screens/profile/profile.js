@@ -2,9 +2,13 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import jwt_decode from "jwt-decode";
 import { useParams } from "react-router";
-import { getUserById, updateUser, updatePassword } from "../../redux/userSlice";
+import { getUserById, updatePassword, updateUser } from "../../redux/userSlice";
 import {
-    FaCheck, FaPencilRuler, FaQuestion, FaTimesCircle, FaUserCog
+    FaCheck,
+    FaPencilRuler,
+    FaQuestion,
+    FaTimesCircle,
+    FaUserCog
 } from "react-icons/fa";
 import QuestionsList from "../../components/questionsList/questionsList";
 import UpdatePasswordModal from "./updatePasswordModal/updatePasswordModal";
@@ -33,7 +37,14 @@ const Profile = () => {
         (state) => state.users);
     const { questions, recentQuestions } = useSelector(
         (state) => state.questions);
-    const decoded = jwt_decode(userData.token);
+    const [decoded, setDecoded] = useState(null);
+
+    useEffect(() => {
+        if (userData && userData.token) {
+            let _decoded = jwt_decode(userData?.token);
+            setDecoded(_decoded);
+        }
+    }, [userData?.id]);
 
     useEffect(() => {
         dispatch(getUserById(id));

@@ -7,11 +7,11 @@ import Answer from "./answer/answer";
 import { useParams } from "react-router";
 import { getQuestionById } from "../../redux/questionSlice";
 import {
-    createAnswer, deleteAnswer, getAnswerById,
+    createAnswer,
+    deleteAnswer,
     getAnswersByQuestionId,
     updateAnswer
 } from "../../redux/answerSlice";
-import jwt_decode from "jwt-decode";
 import RatingsApi from "../../apis/ratingsApi";
 
 const QuestionPage = () => {
@@ -19,14 +19,7 @@ const QuestionPage = () => {
         const [newAnswer, setNewAnswer] = useState("");
         const [editAnswer, setEditAnswer] = useState("");
         const [questionRating, setQuestionRating] = useState({
-            id: null,
-            liked: false,
-            disliked: false
-        });
-        const [answerRating, setAnswerRating] = useState({
-            id: null,
-            liked: false,
-            disliked: false
+            liked: false, disliked: false
         });
 
         const dispatch = useDispatch();
@@ -34,13 +27,32 @@ const QuestionPage = () => {
         const { question } = useSelector((state) => state.questions);
         const { answers } = useSelector((state) => state.answers);
         const { id } = useParams();
-        const decoded = jwt_decode(userData.token);
+
+        const prepareQuestionRatings = () => {
+            if (question?.ratings) {
+                for (let like of question?.ratings?.likes) {
+                    if (userData?.id.toString() === like?.userId.toString()) {
+                        setQuestionRating({ liked: true, disliked: false });
+                        break;
+                    }
+                }
+
+                for (let dislike of question?.ratings?.dislikes) {
+                    if (userData?.id.toString() === dislike?.userId.toString()) {
+                        setQuestionRating({ liked: false, disliked: true });
+                        break;
+                    }
+                }
+            }
+        };
 
         useEffect(() => {
             dispatch(getQuestionById(id));
-
+            prepareQuestionRatings();
             dispatch(getAnswersByQuestionId(id));
-        }, [id, dispatch]);
+        }, [id, dispatch, userData?.id, question?.ratings?.likes.length,
+            question?.ratings?.dislikes.length]);
+
 
         const handleAnswerSubmit = async () => {
             try {
@@ -61,45 +73,18 @@ const QuestionPage = () => {
             await dispatch(deleteAnswer(id)).catch((err) => console.log(err));
         };
 
-        useEffect(() => {
-            if (question?.ratings?.likes) {
-                question?.ratings?.likes?.some((like) => {
-                    if (like?.userId === decoded?.id)
-                        setQuestionRating(
-                            { liked: true, disliked: false, id: like?.id });
-                });
-            }
-            if (question?.ratings?.dislikes) {
-                question?.ratings?.dislikes?.some((dislike) => {
-                    if (dislike?.userId === decoded?.id)
-                        setQuestionRating(
-                            { liked: false, disliked: true, id: dislike?.id });
-                });
-            }
-        }, [decoded?.id]);
-
-        const handleQuestionRating = async (id, ratingId, value) => {
+        const handleQuestionLike = async (id) => {
             try {
-                if (questionRating.liked || questionRating.disliked) {
-                    await RatingsApi.deleteQuestionRating(ratingId, id);
-                    setQuestionRating(
-                        { liked: false, disliked: false, id: null });
-                }
-
-                if (value === 1 && !questionRating.liked) {
-                    const res = await RatingsApi.createQuestionRating(id,
-                        { value: value });
-                    setQuestionRating({
-                        liked: true, disliked: false, id: res.data.id
-                    });
-                }
-
-                if (value === 0 && !questionRating.disliked) {
-                    const res = await RatingsApi.createQuestionRating(id,
-                        { value: value });
-                    console.log(res.data.id);
-                    setQuestionRating(
-                        { liked: false, disliked: true, id: res.data.id });
+                if (questionRating.liked) {
+                    RatingsApi.deleteQuestionLike(id);
+                    setQuestionRating({ liked: false, disliked: false });
+                } else if (questionRating.disliked) {
+                    RatingsApi.deleteQuestionDislike(id);
+                    RatingsApi.createQuestionRating(id, { value: 1 });
+                    setQuestionRating({ liked: true, disliked: false });
+                } else {
+                    RatingsApi.createQuestionRating(id, { value: 1 });
+                    setQuestionRating({ liked: true, disliked: false });
                 }
 
                 await dispatch(getQuestionById(id));
@@ -108,40 +93,32 @@ const QuestionPage = () => {
             }
         };
 
-        const handleAnswerRating = async (id, ratingId, value) => {
+        const handleQuestionDislike = async (id) => {
             try {
-                if (answerRating.liked || answerRating.disliked) {
-                    await RatingsApi.deleteAnswerRating(ratingId, id);
-                    setAnswerRating(
-                        { liked: false, disliked: false, id: null });
+                if (questionRating.disliked) {
+                    RatingsApi.deleteQuestionDislike(id);
+                    setQuestionRating({ liked: false, disliked: false });
+                } else if (questionRating.liked) {
+                    RatingsApi.deleteQuestionLike(id);
+                    RatingsApi.createQuestionRating(id, { value: 0 });
+                    setQuestionRating({ liked: false, disliked: true });
+                } else {
+                    RatingsApi.createQuestionRating(id, { value: 0 });
+                    setQuestionRating({ liked: false, disliked: true });
                 }
 
-                if (value === 1 && !answerRating.liked) {
-                    const res = await RatingsApi.createAnswerRating(id,
-                        { value: value });
-                    setAnswerRating({
-                        liked: true, disliked: false, id: res.data.id
-                    });
-                }
-
-                if (value === 0 && !answerRating.disliked) {
-                    const res = await RatingsApi.createAnswerRating(id,
-                        { value: value });
-                    console.log(res.data.id);
-                    setAnswerRating(
-                        { liked: false, disliked: true, id: res.data.id });
-                }
-
-                await dispatch(getAnswerById(id));
+                await dispatch(getQuestionById(id));
             } catch (err) {
                 console.log(err);
             }
         };
+
         return (
             <div className="question-page-wrapper">
                 <Question question={question} questionRating={questionRating}
-                          handleQuestionRating={handleQuestionRating}
-                          userId={decoded?.id} />
+                          handleQuestionLike={handleQuestionLike}
+                          handleQuestionDislike={handleQuestionDislike}
+                          userId={userData?.id} />
                 <div className="question-page-info">
                     <h3>{answers?.length} Answers</h3>
                     <Button onClick={() => setFormVisible(!formVisible)}
@@ -152,14 +129,11 @@ const QuestionPage = () => {
                             setAnswer={setNewAnswer}
                             handleAnswerSubmit={handleAnswerSubmit} />
                 {answers?.map((item) => {
-                    return <Answer key={item.id} data={item} userId={decoded?.id}
+                    return <Answer key={item.id} answer={item}
                                    editAnswer={editAnswer}
                                    setEditAnswer={setEditAnswer}
                                    handleAnswerUpdate={handleAnswerUpdate}
-                                   handleAnswerDelete={handleAnswerDelete}
-                                   handleAnswerRating={handleAnswerRating}
-                                   answerRating={answerRating}
-                                   setAnswerRating={setAnswerRating} />;
+                                   handleAnswerDelete={handleAnswerDelete} />;
                 })}
             </div>
         );

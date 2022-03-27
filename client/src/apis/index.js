@@ -4,7 +4,7 @@ class Request {
     static DefaultSettings = {
         Protocol: process.env.REACT_APP_PROTOCOL ?? "https",
         BaseUrl:
-        process.env.REACT_APP_BACKEND_URL,
+        process.env.REACT_APP_BACKEND_URL ?? "ask-it-task-app.herokuapp.com/api",
         Headers: {
             "Content-Type": "application/json",
             "x-auth-token": JSON.parse(localStorage.getItem("user")),

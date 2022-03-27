@@ -1,0 +1,100 @@
+.navbar-wrapper {
+    width: 100%;
+    height: 50px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: sticky;
+    top: 0;
+    border-bottom: 1px solid #000;
+    margin-bottom: 40px;
+    padding: 5px;
+    background-color: #fff;
+    overflow-y: unset;
+
+    .logo {
+        display: flex;
+        align-items: center;
+        font-size: 30px;
+        font-weight: 700;
+        padding: 0 20px;
+
+        svg {
+            width: 36px;
+            height: 36px;
+            color: #e7412c;
+            margin-left: 5px;
+        }
+
+        &:hover {
+            color: #e7412c;
+
+            svg {
+                color: #000;
+            }
+        }
+    }
+
+    .navbar-links-container {
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        position: relative;
+        margin-right: 10px;
+        padding: 0 20px;
+        background-color: #fff;
+
+        .navbar-link {
+            display: flex;
+            align-items: center;
+            font-size: 18px;
+            margin-left: 15px;
+            white-space: nowrap;
+            border: 1px solid #000;
+            border-radius: 5px;
+            padding: 8px;
+
+            &:hover {
+                color: #fff;
+                background-color: #000;
+            }
+
+            svg {
+                width: 24px;
+                height: 24px;
+                margin-right: 4px;
+            }
+        }
+    }
+
+    .navbar-hamburger-icon {
+        display: none;
+    }
+
+    @media only screen and (max-width: 640px) {
+        .navbar-links-container {
+            flex-direction: column;
+            background-color: #fff;
+
+            .navbar-link:first-of-type {
+                margin-top: 80px;
+            }
+
+            .navbar-link {
+                width: 100%;
+                margin-bottom: 30px;
+                font-size: 26px;
+            }
+        }
+        .navbar-hamburger-icon {
+            display: block;
+            position: absolute;
+            right: 20px;
+            top: 14px;
+            width: 24px;
+            height: 24px;
+            cursor: pointer;
+        }
+    }
+}

@@ -1,0 +1,13 @@
+.answer-form-wrapper {
+    transform: scaleY(0);
+    opacity: 0;
+    height: 0;
+    transition: opacity .4s, transform .4s;
+    transform-origin: 0 0;
+
+    &.transform {
+        transform: scaleY(1);
+        opacity: 1;
+        height: 100%;
+    }
+}

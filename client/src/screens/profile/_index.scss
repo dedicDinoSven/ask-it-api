@@ -1,0 +1,152 @@
+@import "./updatePasswordModal/index";
+
+.profile-wrapper {
+    width: 100vw;
+    height: 100%;
+    display: flex;
+    justify-content: space-evenly;
+
+    .profile-content-left {
+        width: 42%;
+        height: fit-content;
+
+        .profile-container {
+            h1 {
+                svg {
+                    color: #e7412c;
+                }
+            }
+
+            .profile-details {
+                display: flex;
+                flex-direction: column;
+                position: relative;
+                border: 1px solid #ccc;
+                border-top: 0;
+                border-radius: 0 0 5px 5px;
+                padding: 10px 0 30px;
+
+                .icons-wrapper {
+                    display: flex;
+                    flex-direction: column;
+                    position: absolute;
+                    top: 30px;
+                    right: 16px;
+
+                    @media only screen and (max-width:320px){
+                        transform: translateY(-80px);
+                        flex-direction: row;
+                    }
+
+                    .icon {
+                        color: #000;
+                        width: 25px;
+                        height: 25px;
+                        cursor: pointer;
+                        margin-top: 6px;
+
+                        &.edit:hover {
+                            color: #4693f3;
+                        }
+
+                        &.submit:hover {
+                            color: green;
+                        }
+
+                        &.cancel:hover {
+                            color: red;
+                        }
+                    }
+                }
+
+                .profile-details-item {
+                    display: flex;
+                    align-items: baseline;
+                    margin-left: 16px;
+
+                    p {
+                        font-size: 22px;
+                        margin-left: 8px;
+                    }
+                }
+
+                .border {
+                    width: 100%;
+                    border-bottom: 1px solid #ccc;
+                }
+
+                .change-password-link {
+                    font-size: 24px;
+                    color: #4693f3;
+                    margin-left: 16px;
+
+                    cursor: pointer;
+                }
+            }
+        }
+    }
+
+    .profile-content-right {
+        width: 52%;
+        height: fit-content;
+        max-height: 2100px;
+        border-radius: 5px;
+
+        .profile-container {
+            h1 {
+                color: #e7412c;
+
+                svg {
+                    color: #000;
+                    margin-bottom: 6px;
+                }
+            }
+        }
+    }
+
+    .profile-container {
+        height: fit-content;
+
+        h1 {
+            display: flex;
+            align-items: center;
+            border: 1px solid #ccc;
+            border-radius: 5px 5px 0 0;
+            margin: 20px 0 0 0;
+            padding-left: 10px;
+            padding-bottom: 10px;
+            padding-top: 20px;
+
+            svg {
+                margin-left: 6px;
+            }
+        }
+    }
+
+    @media only screen and (max-width: 768px) {
+        flex-direction: column;
+        align-items: center;
+
+        .profile-content-left, .profile-content-right {
+            width: 90%;
+            margin: 0;
+        }
+
+        .profile-content-left {
+            .profile-container {
+                .profile-details {
+                    .profile-details-item {
+                        h2 {
+                            font-size: 20px;
+                        }
+                        @media only screen and (max-width: 375px){
+                            p {
+                                font-size: 15px;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

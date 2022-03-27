@@ -1,0 +1,42 @@
+.input-field-wrapper {
+    min-width: 230px;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    margin: 16px 0;
+
+    label {
+        margin-bottom: 3px;
+        font-size: 18px;
+        position: absolute;
+        top: 10px;
+        left: 8px;
+        text-align: center;
+        transition: all 0.2s ease;
+        opacity: 0.7;
+
+        &.focused {
+            transform: translate(0px, -34px);
+            opacity: 1;
+            font-size: 18px;
+        }
+    }
+
+    input {
+        min-width: 230px;
+        font-size: 18px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        padding: 10px 12px 8px;
+    }
+
+    textarea {
+        min-width: 230px;
+        height: auto;
+        font-size: 18px;
+        font-family: "Roboto", sans-serif;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        padding: 10px 12px 8px;
+    }
+}

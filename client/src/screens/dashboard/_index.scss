@@ -1,0 +1,44 @@
+.dashboard-wrapper {
+    width: 100vw;
+    display: flex;
+    justify-content: space-evenly;
+    padding: 0;
+
+    .dashboard-content-left {
+        width: 47%;
+    }
+
+    .dashboard-content-right {
+        width: 46%;
+    }
+
+    .dashboard-container {
+        height: fit-content;
+
+        .dashboard-title {
+            display: flex;
+            align-items: center;
+            border: 1px solid #ccc;
+            border-radius: 5px 5px 0 0;
+            margin: 20px 0 0 0;
+            padding-left: 10px;
+            padding-bottom: 10px;
+            padding-top: 20px;
+
+            svg {
+                margin-right: 6px;
+            }
+        }
+
+    }
+
+    @media only screen and (max-width: 768px) {
+        flex-direction: column;
+        align-items: center;
+
+        .dashboard-content-left, .dashboard-content-right  {
+            width: 90%;
+            margin: 0;
+        }
+    }
+}

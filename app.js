@@ -1,4 +1,5 @@
 require("dotenv").config();
+const path = require("path");
 const express = require("express");
 const cors = require("cors");
 const logger = require("morgan");
@@ -8,7 +9,7 @@ const app = express();
 app.use(logger("dev"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(cors({ credentials: true, origin: "http://localhost:3000" }));
+app.use(cors("*"));
 
 app.use("/api/users", require("./routes/users"));
 app.use("/api", require("./routes/auth"));
@@ -18,12 +19,22 @@ app.use("/api/ratings", require("./routes/ratings"));
 
 const db = require("./database");
 db.sequelize
-    .sync()
+    .authenticate()
     .then(() => console.log("Database sync"))
     .catch((err) => console.log(err));
 
-app.get("/", (req, res) => {
-    res.json({ message: "Welcome." });
-});
+if (process.env.NODE_ENV === "production") {
+    app.use(express.static(path.join(__dirname, "/client/build")));
+
+    app.get("/*", (req, res) => {
+        res.sendFile(path.join(__dirname, "client", "build", "index.html"));
+    });
+} else {
+    app.use(express.static(path.join(__dirname, "/client/public")));
+
+    app.get("/*", (req, res) => {
+        res.sendFile(path.join(__dirname, "client", "public", "index.html"));
+    });
+}
 
 module.exports = app;

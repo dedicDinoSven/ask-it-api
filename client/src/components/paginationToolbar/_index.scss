@@ -1,0 +1,48 @@
+.pagination-toolbar {
+    display: flex;
+    justify-content: space-between;
+    margin: 0.5em 0;
+
+    .number-of-rows {
+        .pages-dropdown {
+            margin-left: 0.5em;
+            width: 60px;
+        }
+    }
+
+    .pages {
+        display: flex;
+
+        .page-box {
+            width: 30px;
+            height: 2em;
+            border: solid 1px rgba(51, 51, 51, 0.6);
+            border-radius: 3px;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 0 0.3em;
+        }
+
+        .page-box:hover {
+            background-color: #e7412c;
+            color: black;
+        }
+
+        .active-box {
+            color: #e7412c;
+            border: solid 1px #e7412c;
+        }
+
+        .navigation-box {
+            color: white;
+            background-color: rgba(51, 51, 51, 0.9);
+        }
+
+        .navigation-box:hover {
+            background-color: #e7412c;
+        }
+    }
+}

@@ -1,0 +1,89 @@
+.questions-list-wrapper {
+    margin-bottom: 20px;
+
+    .questions-list {
+        display: flex;
+        flex-direction: column;
+        border: 1px solid #ccc;
+        border-top: 0;
+        border-radius: 0 0 5px 5px;
+
+        .questions-list-item {
+            width: 100%;
+            height: 120px;
+            display: flex;
+            justify-content: space-between;
+            border-bottom: 1px solid #ccc;
+
+            .questions-list-item-main {
+                width: 80%;
+                padding-left: 10px;
+
+                h2 {
+                    color: #4693f3;
+                    margin: 10px 0 0;
+                    cursor: pointer;
+                }
+
+                .questions-list-item-text {
+                    font-size: 14px;
+                    margin: 6px 0;
+                }
+
+                .questions-list-item-author {
+                    font-size: 12px;
+                    font-weight: 500;
+                    margin: 22px 0 0;
+                    cursor: pointer;
+
+                    span {
+                        color: #555;
+                    }
+                }
+            }
+
+            .questions-list-item-stats {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                padding-right: 8px;
+                font-size: 20px;
+                text-align: right;
+                margin-top: 4px;
+                font-weight: 600;
+
+                span {
+                    color: #e7412c;
+                    margin-left: 6px;
+                }
+            }
+        }
+    }
+
+    @media only screen and (max-width: 640px) {
+        .questions-list {
+            .questions-list-item {
+                .questions-list-item-main {
+                    h2 {
+                        font-size: 22px;
+                    }
+                    .questions-list-item-text {
+                        font-size: 12px;
+                    }
+
+                    .questions-list-item-author {
+                        font-size: 11px;
+                        margin-top: 30px;
+                    }
+                }
+
+                @media only screen and (max-width: 375px) {
+                    font-size: 11px;
+                    .questions-list-item-author {
+                        margin-top: 22px;
+                    }
+                }
+            }
+        }
+    }
+}

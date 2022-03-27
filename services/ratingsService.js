@@ -114,7 +114,7 @@ const updateAnswerRating = async (id, answerId, value) => {
                 answerId: answerId,
             },
         });
-        
+
         if (!rating) throw new Error("Rating does not exist!");
 
         if (!value) throw new Error("Value is required!");
@@ -129,19 +129,21 @@ const updateAnswerRating = async (id, answerId, value) => {
     }
 };
 
-const deleteQuestionRating = async (id, questionId) => {
+const deleteQuestionRating = async (questionId, userId, value) => {
     try {
         return await Rating.destroy({
-            where: { id: id, questionId: questionId },
+            where: { questionId: questionId, userId: userId, value: value },
         });
     } catch (err) {
         throw err.message || "Error while trying to delete question rating!";
     }
 };
 
-const deleteAnswerRating = async (id, answerId) => {
+const deleteAnswerRating = async (answerId, userId, value) => {
     try {
-        return await Rating.destroy({ where: { id: id, answerId: answerId } });
+        return await Rating.destroy({
+            where: { answerId: answerId, userId: userId, value: value },
+        });
     } catch (err) {
         throw err.message || "Error while trying to delete answer rating!";
     }

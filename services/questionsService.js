@@ -54,9 +54,14 @@ const getMostLikedQuestions = async () => {
                     required: true,
                     duplicating: false,
                 },
+                {
+                    model: db.User,
+                    as: "user",
+                    attributes: { exclude: ["password"] },
+                },
             ],
             limit: 5,
-            group: ["question.id"],
+            group: ["question.id", "user.id"],
             order: [[Sequelize.col("likesCount"), "DESC"]],
         });
 

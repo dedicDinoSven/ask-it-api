@@ -13,9 +13,9 @@ router.patch("/question/:questionId/:id", auth,
     ratingsController.updateQuestionRating);
 router.patch("/answer/:answerId/:id", auth,
     ratingsController.updateAnswerRating);
-router.delete("/question/:questionId/:id", auth,
+router.delete("/question/:questionId", auth,
     ratingsController.deleteQuestionRating);
-router.delete("/answer/:answerId/:id", auth,
+router.delete("/answer/:answerId", auth,
     ratingsController.deleteAnswerRating);
 
 module.exports = router;

@@ -5,7 +5,7 @@ const createQuestionRating = async (req, res) => {
     const data = {
         value: req.body.value,
         userId: req.user,
-        questionId: req.params.id
+        questionId: req.params.id,
     };
     try {
         const rating = await RatingsService.createQuestionRating(data);
@@ -20,7 +20,7 @@ const createAnswerRating = async (req, res) => {
     const data = {
         value: req.body.value,
         userId: req.user,
-        answerId: req.params.id
+        answerId: req.params.id,
     };
     try {
         const rating = await RatingsService.createAnswerRating(data);
@@ -79,13 +79,18 @@ const updateQuestionRating = async (req, res) => {
 
     try {
         if (req.user === decoded.id) {
-            const rating = await RatingsService.updateQuestionRating(id,
-                questionId, value);
+            const rating = await RatingsService.updateQuestionRating(
+                id,
+                questionId,
+                value
+            );
             return res.status(200).send(rating);
         } else {
-            res.status(403).send({
-                message: "You are not allowed to update this rating!",
-            }).end();
+            res.status(403)
+                .send({
+                    message: "You are not allowed to update this rating!",
+                })
+                .end();
         }
     } catch (err) {
         res.status(403).send({ message: err }).end();
@@ -101,13 +106,18 @@ const updateAnswerRating = async (req, res) => {
 
     try {
         if (req.user === decoded.id) {
-            const rating = await RatingsService.updateAnswerRating(id, answerId,
-                value);
+            const rating = await RatingsService.updateAnswerRating(
+                id,
+                answerId,
+                value
+            );
             return res.status(200).send(rating);
         } else {
-            res.status(403).send({
-                message: "You are not allowed to update this rating!",
-            }).end();
+            res.status(403)
+                .send({
+                    message: "You are not allowed to update this rating!",
+                })
+                .end();
         }
     } catch (err) {
         res.status(403).send({ message: err }).end();
@@ -115,63 +125,62 @@ const updateAnswerRating = async (req, res) => {
 };
 
 const deleteQuestionRating = async (req, res) => {
-    const { id, questionId } = req.params;
+    const questionId = req.params.questionId;
+    const userId = req.user;
+    const value = req.query.value;
     const token = req.header("x-auth-token");
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
     try {
         if (req.user === decoded.id) {
-            const rating = await RatingsService.getRatingById(id);
+            const deletedRating = await RatingsService.deleteQuestionRating(
+                questionId,
+                userId,
+                value
+            );
 
-            if (!rating)
-                return res.status(404)
-                    .send({ message: "Rating does not exist!" });
-
-            const deletedRating = await RatingsService.deleteQuestionRating(id,
-                questionId);
-
-            res.status(200)
-                .send({ message: "Rating deleted!", rating: deletedRating });
+            res.status(200).send({
+                message: "Rating deleted!",
+                rating: deletedRating,
+            });
         } else {
             res.status(403).send({
                 message: "You are not allowed to delete this rating!",
             });
         }
-    } catch
-        (err) {
+    } catch (err) {
         res.status(500).send({ message: err }).end();
     }
 };
 
 const deleteAnswerRating = async (req, res) => {
-    const { id, answerId } = req.params;
+    const answerId = req.params.answerId;
+    const userId = req.user;
+    const value = req.query.value;
     const token = req.header("x-auth-token");
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
     try {
         if (req.user === decoded.id) {
-            const rating = await RatingsService.getRatingById(id);
+            const deletedRating = await RatingsService.deleteAnswerRating(
+                answerId,
+                userId,
+                value
+            );
 
-            if (!rating)
-                return res.status(404)
-                    .send({ message: "Rating does not exist!" });
-
-            const deletedRating = await RatingsService.deleteAnswerRating(id,
-                answerId);
-
-            res.status(200)
-                .send({ message: "Rating deleted!", rating: deletedRating });
+            res.status(200).send({
+                message: "Rating deleted!",
+                rating: deletedRating,
+            });
         } else {
             res.status(403).send({
                 message: "You are not allowed to delete this rating!",
             });
         }
-    } catch
-        (err) {
+    } catch (err) {
         res.status(500).send({ message: err }).end();
     }
 };
-
 
 const RatingsController = {
     createQuestionRating,
@@ -183,7 +192,7 @@ const RatingsController = {
     updateQuestionRating,
     updateAnswerRating,
     deleteQuestionRating,
-    deleteAnswerRating
+    deleteAnswerRating,
 };
 
 module.exports = RatingsController;

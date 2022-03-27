@@ -10,10 +10,8 @@ app.use(logger("dev"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-if (process.env.NODE_ENV === "production")
-    app.use(cors("*"));
-else app.use(cors({credentials: true, origin: 'http://localhost:3000'}));
-
+if (process.env.NODE_ENV === "production") app.use(cors("*"));
+else app.use(cors({ credentials: true, origin: "http://localhost:3000" }));
 
 app.use("/api/users", require("./routes/users"));
 app.use("/api", require("./routes/auth"));
@@ -24,7 +22,7 @@ app.use("/api/ratings", require("./routes/ratings"));
 const db = require("./database");
 db.sequelize
     .authenticate()
-    .then(() => console.log("Database sync"))
+    .then(() => console.log("Database connected"))
     .catch((err) => console.log(err));
 
 if (process.env.NODE_ENV === "production") {

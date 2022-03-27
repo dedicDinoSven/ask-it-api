@@ -9,7 +9,11 @@ const app = express();
 app.use(logger("dev"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(cors("*"));
+
+if (process.env.NODE_ENV === "production")
+    app.use(cors("*"));
+else app.use(cors({credentials: true, origin: 'http://localhost:3000'}));
+
 
 app.use("/api/users", require("./routes/users"));
 app.use("/api", require("./routes/auth"));
